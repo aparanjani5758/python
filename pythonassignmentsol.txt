@@ -1,0 +1,213 @@
+1.
+def check_palindrome(num):
+    # Find the divisor needed to obtain the first digit.
+    divisor = 1
+    while (num / divisor >= 10):
+        divisor *= 10
+
+    while (num != 0):
+        first = num / divisor
+        last = num % 10
+
+        if (first != last):
+            return False
+
+        num = (num % divisor) / 10
+
+        # The number of digits has been reduced by 2, so our divisor is reduced by 10 ** 2.
+        divisor = divisor / 100
+
+    return True
+
+
+
+
+q.2.
+from collections import deque
+
+# Given a row and column, returns whether that tile is walkable.
+def walkable(board, row, col):
+    if row < 0 or row >= len(board):
+        return False
+    if col < 0 or col >= len(board[0]):
+        return False
+    return not board[row][col]
+
+# Gets walkable neighbouring tiles.
+def get_walkable_neighbours(board, row, col):
+    return [(r, c) for r, c in [
+        (row, col - 1),
+        (row - 1, col),
+        (row + 1, col),
+        (row, col + 1)]
+        if walkable(board, r, c)
+    ]
+
+def shortest_path(board, start, end):
+    seen = set()
+    queue = deque([(start, 0)])
+    while queue:
+        coords, count = queue.popleft()
+        if coords == end:
+            return count
+        seen.add(coords)
+        neighbours = get_walkable_neighbours(board, coords[0], coords[1])
+        queue.extend((neighbour, count + 1) for neighbour in neighbours
+                if neighbour not in seen)
+
+board = [[False, False, False, False],
+        [True, True, True, True],
+        [False, False, False, False],
+        [False, False, False, False]]
+
+print(shortest_path(board, (3, 0), (0, 0)))
+
+
+
+
+q.3.
+def partition(lst, x):
+    i = 0
+    j = 0
+    k = len(lst) - 1
+
+    while j < k:
+        if lst[j] == x:
+            j += 1
+        elif lst[j] < x:
+            lst[i], lst[j] = lst[j], lst[i]
+            i += 1
+            j += 1
+        else:
+            lst[j], lst[k] = lst[k], lst[j]
+            k -= 1
+
+    return lst
+
+
+
+q.4
+
+def get_closest_string(s):
+    closest_string = []
+
+    open_parens = 0
+
+    for char in s:
+        if char == "(":
+            open_parens += 1
+            closest_string.append(char)
+
+        else:
+            if not open_parens:
+                closest_string += "("
+            else:
+                open_parens -= 1
+            closest_string.append(char)
+
+    while open_parens:
+        open_parens -= 1
+        closest_string.append(")")
+
+    return ''.join(closest_string)
+
+
+
+q.5
+
+from Queue import Queue
+from collections import defaultdict
+
+class Node:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+def minimum_level_sum(root):
+    queue = Queue()
+    queue.put((root, 0))
+    level_to_sum = defaultdict(int) # Maps level to its sum
+
+
+    while not queue.empty():
+        node, level = queue.get()
+        level_to_sum[level] += node.val
+
+        if node.right:
+            queue.put((node.right, level + 1))
+
+        if node.left:
+            queue.put((node.left, level + 1))
+
+    return min(level_to_sum, key=level_to_sum.get)
+
+q.6
+s=["Nan 10 Nan", "NAN 400"]
+for i in s:
+    k=i.lower().split('nan')
+    for j in k:
+        if j!="":
+            print(float(j))
+
+q.7 
+
+q.8
+s=[10,23,45,11,40,21,40]
+max_elemen=max(s)
+max_index=s.index(max_elemen)
+index=s.pop(max_index)
+while max_elemen==index:
+   
+    try:
+        max_index=s.index(max_elemen)
+        index=s.pop(max_index)
+    except: 
+        break
+print(max(s))
+
+
+
+q.9
+
+DENOMINATIONS = [1, 5, 10, 25]
+
+def minimum_coins_dp(n):
+    cache = [0 for _ in range(n + 1)]
+
+    for d in DENOMINATIONS:
+        if d < len(cache):
+            cache[d] = 1
+
+    for i in range(1, n + 1):
+        cache[i] = min(1 + cache[i - d] for d in DENOMINATIONS if i - d >= 0)
+
+    return cache[n]
+
+
+
+q.10
+
+def partition(arr):
+    if sum(arr) % 3 != 0:
+        return None
+
+    j = None
+    k = None
+    current_sum = 0
+    for i, num in enumerate(arr):
+        if current_sum == sum(arr) / 3:
+            current_sum = 0
+            if j is None:
+                j = i
+            elif k is None:
+                k = i
+        current_sum += num
+
+    if j is None or k is None:
+        return None
+
+    return [arr[:j], arr[j:k], arr[k:]]
+
+        
+        
